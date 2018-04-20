@@ -90,12 +90,12 @@ class Box {
 	}
 
 	bool pointInside(ofVec3f v) {
-		float maxX = std::max(max().x(), min().x());
-		float maxY = std::max(max().y(), min().y());
-		float maxZ = std::max(max().z(), min().z());
-		float minX = std::min(max().x(), min().x());
-		float minY = std::min(max().y(), min().y());
-		float minZ = std::min(max().z(), min().z());
+		float maxX = max().x(); // std::max(max().x(), min().x());
+		float maxY = max().y(); // std::max(max().y(), min().y());
+		float maxZ = max().z(); // std::max(max().z(), min().z());
+		float minX = min().x(); // std::min(max().x(), min().x());
+		float minY = min().y(); // std::min(max().y(), min().y());
+		float minZ = min().z(); // std::min(max().z(), min().z());
 
 		return (v.x > minX && v.y > minY && v.z > minZ &&
 			v.x < maxX && v.y < maxY && v.z < maxZ);

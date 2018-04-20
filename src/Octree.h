@@ -1,11 +1,15 @@
 #pragma once
 #include "ofMain.h"
+#include "ray.h"
 #include "box.h"
 
 
 class Node {
 
 public:
+	bool shouldDraw = false;
+	bool last = false;
+
 	Box* box = nullptr;
 
 	ofMesh* mesh = nullptr;
@@ -25,7 +29,9 @@ public:
 
 		verts = Box::vertsInside(box, mesh, possibleVerts);
 
-		if (verts.size() > 0 && depth > 0) {
+		//if (verts.size() == 1) cout << "HIT SINGLE VERTEX" << endl;
+
+		if (verts.size() > 1 && depth > 0) {
 			// Subdivide box into children
 			// For each child box:
 			//   children[i] = new Node(childbox[i], depth - 1)
@@ -36,6 +42,20 @@ public:
 				children[i] = new Node(childBoxes.at(i), depth - 1, mesh, false, verts);
 			}
 		}
+		else if (verts.size() == 1 || depth == 0) {
+			last = true;
+		}
+	}
+
+	void checkIntersection(Ray ray) {
+		if (this->box->intersect(ray, -100, 100)) {
+			shouldDraw = true;
+			if (!isLeaf()) {
+				for (Node* c : children) {
+					c->checkIntersection(ray);
+				}
+			}
+		}
 	}
 
 	bool isLeaf() {
@@ -43,11 +63,25 @@ public:
 	}
 
 	void draw() {
+		if (!shouldDraw) return;
+
 		drawBox();
 
 		if (!isLeaf()) {
 			for (Node* child : children) {
 				child->draw();
+			}
+		}
+	}
+
+	void undraw() {
+		if (shouldDraw) {
+			shouldDraw = false;
+			last = false;
+			if (!isLeaf()) {
+				for (Node* child : children) {
+					child->undraw();
+				}
 			}
 		}
 	}
@@ -67,6 +101,11 @@ public:
 			float d = size.z();
 			ofSetColor(Node::getColor(depth));
 			ofDrawBox(p, w, h, d);
+
+			if (last) {
+				ofSetColor(ofColor::blue);
+				ofDrawSphere(center.x(), center.y(), center.z(), 0.5);
+			}
 		}
 		else {
 			cout << "Box was missing!" << endl;
@@ -81,9 +120,9 @@ public:
 		if (d == 4) return ofColor::bisque;
 		if (d == 5) return ofColor::darkSalmon;
 		if (d == 6) return ofColor::cornsilk;
-		if (d == 7) return ofColor::lavender;
-		if (d == 8) return ofColor::gainsboro;
-		if (d == 9) return ofColor::lightPink;
+		if (d == 7) return ofColor::darkOliveGreen;
+		if (d == 8) return ofColor::red;
+		if (d == 9) return ofColor::white;
 		else return ofColor::red;
 	}
 };

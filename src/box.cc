@@ -14,7 +14,7 @@
 
 bool Box::intersect(const Ray &r, float t0, float t1) const {
   float tmin, tmax, tymin, tymax, tzmin, tzmax;
-
+  
   tmin = (parameters[r.sign[0]].x() - r.origin.x()) * r.inv_direction.x();
   tmax = (parameters[1-r.sign[0]].x() - r.origin.x()) * r.inv_direction.x();
   tymin = (parameters[r.sign[1]].y() - r.origin.y()) * r.inv_direction.y();

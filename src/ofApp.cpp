@@ -54,11 +54,11 @@ void ofApp::setup(){
 	mars.loadModel("geo/mars-low-v2.obj");
 	mars.setScaleNormalization(false);
 
-	boundingBox = &meshBounds(mars.getMesh(0));
-	//boundingBox = new Box(
-	//	Vector3(-10, -10, -10),
-	//	Vector3(10, 10, 10)
-	//);
+	//boundingBox = &meshBounds(mars.getMesh(0));
+	boundingBox = new Box(
+		Vector3(-10, -6, -13),
+		Vector3(10, 6, 14)
+	);
 	
 	//  Test Box Subdivide
 	//
@@ -68,7 +68,13 @@ void ofApp::setup(){
 
 	vector<int> startingVerts;
 
-	octree = new Node(boundingBox, 7, &mars.getMesh(0), true, startingVerts);
+	uint64_t startTime = ofGetElapsedTimeMillis();
+
+	octree = new Node(boundingBox, 9, &mars.getMesh(0), true, startingVerts);
+
+	uint64_t endTime = ofGetElapsedTimeMillis();
+
+	cout << "Octree build took " << endTime - startTime << " ms" << endl;
 	
 
 }
@@ -219,6 +225,9 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_DEL:
 		break;
+	case GLFW_KEY_SPACE:
+		octree->undraw();
+		break;
 	default:
 		break;
 	}
@@ -264,6 +273,9 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
+
+	if (bAltKeyDown) return;
+
     ofVec3f mouse(mouseX, mouseY);
 	ofVec3f rayPoint = cam.screenToWorld(mouse);
 	ofVec3f rayDir = rayPoint - cam.getPosition();
@@ -271,7 +283,16 @@ void ofApp::mousePressed(int x, int y, int button) {
 	Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z),
 		Vector3(rayDir.x, rayDir.y, rayDir.z));
 
-	//if (level3->at(1).intersect(ray, -100, 100)) cout << "intersects" << endl;
+	uint64_t startTime = ofGetElapsedTimeMicros();
+
+	octree->checkIntersection(ray);
+
+	uint64_t endTime = ofGetElapsedTimeMicros();
+
+	cout << "Selection took " << endTime - startTime << " microseconds" << endl;
+
+	//cout << octree->box->min().x() << " " << octree->box->min().y() << " " << octree->box->min().y() << endl;
+	//cout << octree->box->max().x() << " " << octree->box->max().y() << " " << octree->box->max().y() << endl;
 }
 
 
