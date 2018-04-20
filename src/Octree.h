@@ -7,16 +7,28 @@ class Node {
 
 public:
 	Box* box = nullptr;
+
+	ofMesh* mesh = nullptr;
+	vector<int> verts;
+
 	Node* children[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 	int depth = 0;
 
-	Node(Box* newBox, int newDepth) {
+	Node(Box* newBox, int newDepth, ofMesh* newMesh, bool checkAll, vector<int> * possibleVerts = nullptr) {
 		box = newBox;
+		mesh = newMesh;
 		depth = newDepth;
 
-		cout << "New node" << endl;
+		int p = (possibleVerts) ? possibleVerts->size() : 0;
+		cout << "Possible: " << p << endl;
 
-		if (depth > 0) {
+		// Find verts that are inside this box
+		if (p > 0 || checkAll) {
+			verts = Box::vertsInside(box, mesh, possibleVerts);
+			cout << "  Actual: " << verts.size() << endl;
+		}
+
+		if (verts.size() > 0 && depth > 0) {
 			// Subdivide box into children
 			// For each child box:
 			//   children[i] = new Node(childbox[i], depth - 1)
@@ -24,7 +36,8 @@ public:
 			Box::subDivideBox8(box, childBoxes);
 
 			for (int i = 0; i < 8; i++) {
-				children[i] = new Node(childBoxes.at(i), depth - 1);
+				vector<int> * vertPointer = new vector<int>(verts);
+				children[i] = new Node(childBoxes.at(i), depth - 1, mesh, false, vertPointer);
 			}
 		}
 	}
@@ -70,6 +83,11 @@ public:
 		if (d == 2) return ofColor::coral;
 		if (d == 3) return ofColor::fuchsia;
 		if (d == 4) return ofColor::bisque;
+		if (d == 5) return ofColor::darkSalmon;
+		if (d == 6) return ofColor::cornsilk;
+		if (d == 7) return ofColor::lavender;
+		if (d == 8) return ofColor::gainsboro;
+		if (d == 9) return ofColor::lightPink;
 		else return ofColor::red;
 	}
 };

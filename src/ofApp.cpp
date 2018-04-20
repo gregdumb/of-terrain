@@ -62,7 +62,9 @@ void ofApp::setup(){
 
 	// Create 5 levels
 
-	octree = new Node(boundingBox, 4);
+	vector<int> startingVerts;
+
+	octree = new Node(boundingBox, 5, &mars.getMesh(0), true);
 	
 
 }

@@ -64,6 +64,50 @@ class Box {
 			boxList.push_back(b[i]);
 		}
 	}
+
+	static vector<int> vertsInside(Box* box, ofMesh* mesh, vector<int> * verts = nullptr) {
+		int n = 0;
+		if (verts) {
+			n = verts->size();
+		}
+		else {
+			n = mesh->getNumVertices();
+		}
+
+		// Points inside
+		vector<int> vect;
+
+		float maxX = box->max().x(); // MAX(box->max().x(), box->min().x());
+		float maxY = box->max().y(); // MAX(box->max().y(), box->min().y());
+		float maxZ = box->max().z(); // MAX(box->max().z(), box->min().z());
+
+		float minX = box->min().x(); // MIN(box->max().x(), box->min().x());
+		float minY = box->min().y(); // MIN(box->max().y(), box->min().y());
+		float minZ = box->min().z(); // MIN(box->max().z(), box->min().z());
+
+		//ofVec3f maxCorner = ofVec3f(maxX, maxY, maxZ);
+		//ofVec3f minCorner = ofVec3f(minX, minY, minZ);
+
+		for (int i = 0; i < n; i++) {
+			ofVec3f v;
+			if (verts) {
+				v = mesh->getVertex(verts->at(i));
+				//cout << "Yes" << endl;
+			}
+			else {
+				v = mesh->getVertex(i);
+				//cout << "No vertexes passed" << endl;
+			}
+
+			if (v.x > minX && v.y > minY && v.z > minZ &&
+				v.x < maxX && v.y < maxY && v.z < maxZ) {
+
+				vect.push_back(i);
+			}
+		}
+
+		return vect;
+	}
 };
 
 #endif // _BOX_H_
