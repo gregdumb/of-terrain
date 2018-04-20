@@ -3,6 +3,7 @@
 #ifndef _BOX_H_
 #define _BOX_H_
 
+#include <algorithm>
 #include <assert.h>
 #include "vector3.h"
 #include "ray.h"
@@ -65,48 +66,39 @@ class Box {
 		}
 	}
 
-	static vector<int> vertsInside(Box* box, ofMesh* mesh, vector<int> * verts = nullptr) {
-		int n = 0;
-		if (verts) {
-			n = verts->size();
-		}
-		else {
-			n = mesh->getNumVertices();
-		}
-
+	static vector<int> vertsInside(Box* b, ofMesh* mesh, vector<int> verts) {
+		
 		// Points inside
 		vector<int> vect;
 
-		float maxX = box->max().x(); // MAX(box->max().x(), box->min().x());
-		float maxY = box->max().y(); // MAX(box->max().y(), box->min().y());
-		float maxZ = box->max().z(); // MAX(box->max().z(), box->min().z());
-
-		float minX = box->min().x(); // MIN(box->max().x(), box->min().x());
-		float minY = box->min().y(); // MIN(box->max().y(), box->min().y());
-		float minZ = box->min().z(); // MIN(box->max().z(), box->min().z());
-
-		//ofVec3f maxCorner = ofVec3f(maxX, maxY, maxZ);
-		//ofVec3f minCorner = ofVec3f(minX, minY, minZ);
-
-		for (int i = 0; i < n; i++) {
-			ofVec3f v;
-			if (verts) {
-				v = mesh->getVertex(verts->at(i));
-				//cout << "Yes" << endl;
+		if (verts.size() > 0) {
+			// Use passed verts
+			for (int i : verts) {
+				ofVec3f v = mesh->getVertex(i);
+				if (b->pointInside(v)) vect.push_back(i);
 			}
-			else {
-				v = mesh->getVertex(i);
-				//cout << "No vertexes passed" << endl;
-			}
-
-			if (v.x > minX && v.y > minY && v.z > minZ &&
-				v.x < maxX && v.y < maxY && v.z < maxZ) {
-
-				vect.push_back(i);
+		}
+		else {
+			// Use all verts
+			for (int i = 0; i < mesh->getNumVertices(); i++) {
+				ofVec3f v = mesh->getVertex(i);
+				if (b->pointInside(v)) vect.push_back(i);
 			}
 		}
 
 		return vect;
+	}
+
+	bool pointInside(ofVec3f v) {
+		float maxX = std::max(max().x(), min().x());
+		float maxY = std::max(max().y(), min().y());
+		float maxZ = std::max(max().z(), min().z());
+		float minX = std::min(max().x(), min().x());
+		float minY = std::min(max().y(), min().y());
+		float minZ = std::min(max().z(), min().z());
+
+		return (v.x > minX && v.y > minY && v.z > minZ &&
+			v.x < maxX && v.y < maxY && v.z < maxZ);
 	}
 };
 

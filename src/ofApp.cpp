@@ -55,6 +55,10 @@ void ofApp::setup(){
 	mars.setScaleNormalization(false);
 
 	boundingBox = &meshBounds(mars.getMesh(0));
+	//boundingBox = new Box(
+	//	Vector3(-10, -10, -10),
+	//	Vector3(10, 10, 10)
+	//);
 	
 	//  Test Box Subdivide
 	//
@@ -64,7 +68,7 @@ void ofApp::setup(){
 
 	vector<int> startingVerts;
 
-	octree = new Node(boundingBox, 5, &mars.getMesh(0), true);
+	octree = new Node(boundingBox, 7, &mars.getMesh(0), true, startingVerts);
 	
 
 }

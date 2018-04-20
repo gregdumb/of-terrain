@@ -14,19 +14,16 @@ public:
 	Node* children[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 	int depth = 0;
 
-	Node(Box* newBox, int newDepth, ofMesh* newMesh, bool checkAll, vector<int> * possibleVerts = nullptr) {
+	Node(Box* newBox, int newDepth, ofMesh* newMesh, bool checkAll, vector<int> possibleVerts) {
 		box = newBox;
 		mesh = newMesh;
 		depth = newDepth;
 
-		int p = (possibleVerts) ? possibleVerts->size() : 0;
-		cout << "Possible: " << p << endl;
-
-		// Find verts that are inside this box
-		if (p > 0 || checkAll) {
-			verts = Box::vertsInside(box, mesh, possibleVerts);
-			cout << "  Actual: " << verts.size() << endl;
+		if (possibleVerts.size() == 0) {
+			cout << "Using all verts as options" << endl;
 		}
+
+		verts = Box::vertsInside(box, mesh, possibleVerts);
 
 		if (verts.size() > 0 && depth > 0) {
 			// Subdivide box into children
@@ -36,8 +33,7 @@ public:
 			Box::subDivideBox8(box, childBoxes);
 
 			for (int i = 0; i < 8; i++) {
-				vector<int> * vertPointer = new vector<int>(verts);
-				children[i] = new Node(childBoxes.at(i), depth - 1, mesh, false, vertPointer);
+				children[i] = new Node(childBoxes.at(i), depth - 1, mesh, false, verts);
 			}
 		}
 	}
