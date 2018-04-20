@@ -31,7 +31,7 @@ public:
 
 		//if (verts.size() == 1) cout << "HIT SINGLE VERTEX" << endl;
 
-		if (verts.size() > 1 && depth > 0) {
+		if (verts.size() > 1) {
 			// Subdivide box into children
 			// For each child box:
 			//   children[i] = new Node(childbox[i], depth - 1)
