@@ -70,7 +70,8 @@ void ofApp::setup(){
 
 	uint64_t startTime = ofGetElapsedTimeMillis();
 
-	octree = new Node(boundingBox, 9, &mars.getMesh(0), true, startingVerts);
+	//octree = new Node(boundingBox, 9, &mars.getMesh(0), true, startingVerts);
+	octree = new Octree(boundingBox, &mars.getMesh(0), 20);
 
 	uint64_t endTime = ofGetElapsedTimeMillis();
 

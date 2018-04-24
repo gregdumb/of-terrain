@@ -17,19 +17,19 @@ public:
 
 	Node* children[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 	int depth = 0;
+	int maxDepth = 0;
 
-	Node(Box* newBox, int newDepth, ofMesh* newMesh, bool checkAll, vector<int> possibleVerts) {
+	Node(Box* newBox, ofMesh* newMesh, int newDepth, int newMaxDepth, vector<int> possibleVerts) {
 		box = newBox;
 		mesh = newMesh;
 		depth = newDepth;
+		maxDepth = newMaxDepth;
 
 		if (possibleVerts.size() == 0) {
 			cout << "Using all verts as options" << endl;
 		}
 
 		verts = Box::vertsInside(box, mesh, possibleVerts);
-
-		//if (verts.size() == 1) cout << "HIT SINGLE VERTEX" << endl;
 
 		if (verts.size() > 1) {
 			// Subdivide box into children
@@ -39,21 +39,24 @@ public:
 			Box::subDivideBox8(box, childBoxes);
 
 			for (int i = 0; i < 8; i++) {
-				children[i] = new Node(childBoxes.at(i), depth - 1, mesh, false, verts);
+				children[i] = new Node(childBoxes.at(i), mesh, depth + 1, maxDepth, verts);
 			}
 		}
-		else if (verts.size() == 1 || depth == 0) {
+		else if (verts.size() == 1 || depth == maxDepth) {
 			last = true;
 		}
 	}
 
-	void checkIntersection(Ray ray) {
+	void checkIntersection(Ray ray, vector<Node*> & leafsHit) {
 		if (this->box->intersect(ray, -100, 100)) {
 			shouldDraw = true;
 			if (!isLeaf()) {
 				for (Node* c : children) {
-					c->checkIntersection(ray);
+					c->checkIntersection(ray, leafsHit);
 				}
+			}
+			else if (last) {
+				leafsHit.push_back(this);
 			}
 		}
 	}
@@ -128,10 +131,31 @@ public:
 };
 
 class Octree {
+public:
 
 	Node* head;
 
-	Octree(int depth) {
+	Octree(Box* box, ofMesh* mesh, int maxDepth) {
 
+		head = new Node(box, mesh, 0, maxDepth, vector<int>());
+	}
+
+	void draw() {
+		head->draw();
+	}
+
+	void undraw() {
+		head->undraw();
+	}
+
+	void checkIntersection(Ray ray) {
+		
+		vector<Node*> leafs;
+
+		head->checkIntersection(ray, leafs);
+
+		for (Node* l : leafs) {
+			cout << "Hit leaf of depth " << l->depth << endl;
+		}
 	}
 };

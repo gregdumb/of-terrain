@@ -59,5 +59,5 @@ class ofApp : public ofBaseApp{
 
 		const float selectionRange = 4.0;
 
-		Node* octree;
+		Octree* octree;
 };
