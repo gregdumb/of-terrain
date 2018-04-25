@@ -105,10 +105,10 @@ public:
 			ofSetColor(Node::getColor(depth));
 			ofDrawBox(p, w, h, d);
 
-			if (last) {
-				ofSetColor(ofColor::blue);
-				ofDrawSphere(center.x(), center.y(), center.z(), 0.5);
-			}
+			//if (last) {
+			//	ofSetColor(ofColor::blue);
+			//	ofDrawSphere(center.x(), center.y(), center.z(), 0.5);
+			//}
 		}
 		else {
 			cout << "Box was missing!" << endl;

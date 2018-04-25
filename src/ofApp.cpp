@@ -51,13 +51,16 @@ void ofApp::setup(){
 	//
 	initLightingAndMaterials();
 
-	mars.loadModel("geo/mars-low-v2.obj");
+	//mars.loadModel("geo/mars-low-v2.obj");
+	mars.loadModel("flats.obj", true);
 	mars.setScaleNormalization(false);
+	float scale = 2.5;
+	//mars.setScale(scale, scale, scale);
 
 	//boundingBox = &meshBounds(mars.getMesh(0));
 	boundingBox = new Box(
-		Vector3(-10, -6, -13),
-		Vector3(10, 6, 14)
+		Vector3(-13, -5, -13),
+		Vector3(13, 5, 13)
 	);
 	
 	//  Test Box Subdivide
@@ -70,7 +73,6 @@ void ofApp::setup(){
 
 	uint64_t startTime = ofGetElapsedTimeMillis();
 
-	//octree = new Node(boundingBox, 9, &mars.getMesh(0), true, startingVerts);
 	octree = new Octree(boundingBox, &mars.getMesh(0), 20);
 
 	uint64_t endTime = ofGetElapsedTimeMillis();
