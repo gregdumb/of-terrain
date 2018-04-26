@@ -71,6 +71,8 @@ void ofApp::setup(){
 
 	vector<int> startingVerts;
 
+	cout << "Landscape has " << mars.getMesh(0).getNumVertices() << " verts" << endl;
+
 	uint64_t startTime = ofGetElapsedTimeMillis();
 
 	octree = new Octree(boundingBox, &mars.getMesh(0), 20);
