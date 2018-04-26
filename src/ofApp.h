@@ -5,6 +5,7 @@
 #include "box.h"
 #include "ray.h"
 #include "Octree.h"
+#include "ParticleEmitter.h"
 
 class ofApp : public ofBaseApp{
 
@@ -60,4 +61,6 @@ class ofApp : public ofBaseApp{
 		const float selectionRange = 4.0;
 
 		Octree* octree;
+
+		ParticleEmitter* ps;
 };

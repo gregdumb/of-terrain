@@ -81,14 +81,24 @@ void ofApp::setup(){
 
 	cout << "Octree build took " << endTime - startTime << " ms" << endl;
 	
+	ps = new ParticleEmitter();
+	ps->setPosition(ofVec3f(0, 2, 0));
+	ps->type = EmitterType::RadialEmitter;
+	ps->setRate(20);
+	ps->particleRadius = 0.1;
+	ps->setLifespan(1);
+	ps->setVelocity(ofVec3f(0, -1, 0));
+	ps->particleColor = ofColor::blue;
+	
 
+	ps->start();
 }
 
 //--------------------------------------------------------------
 // incrementally update scene (animation)
 //
 void ofApp::update() {
-	
+	ps->update();
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -139,6 +149,8 @@ void ofApp::draw(){
 	//drawBox(boundingBox);
 
 	octree->draw();
+
+	ps->draw();
 
 	/*ofSetColor(ofColor::red);
 	for (int i=0; i < level1.size(); i++)
