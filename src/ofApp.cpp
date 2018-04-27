@@ -63,14 +63,6 @@ void ofApp::setup(){
 		Vector3(13, 5, 13)
 	);
 	
-	//  Test Box Subdivide
-	//
-	//levels = new vector<vector<Box>*>();
-
-	// Create 5 levels
-
-	vector<int> startingVerts;
-
 	cout << "Landscape has " << mars.getMesh(0).getNumVertices() << " verts" << endl;
 
 	uint64_t startTime = ofGetElapsedTimeMillis();
@@ -146,24 +138,10 @@ void ofApp::draw(){
 	
 	ofNoFill();
 	ofSetColor(ofColor::white);
-	//drawBox(boundingBox);
-
+	
 	octree->draw();
 
 	ps->draw();
-
-	/*ofSetColor(ofColor::red);
-	for (int i=0; i < level1.size(); i++)
-		drawBox(level1->at(i));
-
-	ofSetColor(ofColor::blue);
-	for (int i = 0; i < level2->size(); i++)
-		drawBox(level2->at(i));
-
-	ofSetColor(ofColor::yellow);
-	for (int i = 0; i < level3->size(); i++)
-		drawBox(level3->at(i));*/
-
 
 	ofPopMatrix();
 	cam.end();
@@ -349,37 +327,6 @@ Box ofApp::meshBounds(const ofMesh & mesh) {
 	return Box(Vector3(min.x, min.y, min.z), Vector3(max.x, max.y, max.z));
 }
 
-//  Subdivide a Box into eight(8) equal size boxes, return them in boxList;
-//
-/*void ofApp::subDivideBox8(const Box &box, vector<Box> & boxList) {
-	Vector3 min = box.parameters[0];
-	Vector3 max = box.parameters[1];
-	Vector3 size = max - min;
-	Vector3 center = size / 2 + min;
-	float xdist = (max.x() - min.x()) / 2;
-	float ydist = (max.y() - min.y()) / 2;
-	float zdist = (max.z() - min.z()) / 2;
-	Vector3 h = Vector3(0, ydist, 0);
-
-	//  generate ground floor
-	//
-	Box b[8];
-	b[0] = Box(min, center);
-	b[1] = Box(b[0].min() + Vector3(xdist, 0, 0), b[0].max() + Vector3(xdist, 0, 0));
-	b[2] = Box(b[1].min() + Vector3(0, 0, zdist), b[1].max() + Vector3(0, 0, zdist));
-	b[3] = Box(b[2].min() + Vector3(-xdist, 0, 0), b[2].max() + Vector3(-xdist, 0, 0));
-
-	//boxList->clear();
-	for (int i = 0; i < 4; i++)
-		boxList.push_back(b[i]);
-
-	// generate second story
-	//
-	for (int i = 4; i < 8; i++) {
-		b[i] = Box(b[i - 4].min() + h, b[i - 4].max() + h);
-		boxList.push_back(b[i]);
-	}
-}*/
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
