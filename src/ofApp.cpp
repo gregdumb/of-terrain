@@ -45,12 +45,13 @@ void ofApp::setup(){
 	bRoverLoaded = false;
 	bTerrainSelected = true;
 //	ofSetWindowShape(1024, 768);
-    cameras.push_back(cam);
-	cameras.data()->setDistance(10);
-	cam.setNearClip(.1);
-	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
-	ofSetVerticalSync(true);
-	cam.disableMouseInput();
+    cameras.setup();
+
+	
+	mainCam = cameras.cams.at(0);
+
+	
+
 	ofEnableSmoothing();
 	ofEnableDepthTest();
 
@@ -79,7 +80,7 @@ void ofApp::setup(){
      octree = new Octree(boundingBox, &mars.getMesh(0), 20);
      
      So I created it as its own object and then pass the reference
-     to the Octree Constructor. @cthuff
+     to the Octree Constructor. 
     */
     ofMesh mesh = mars.getMesh(0);
     octree = new Octree(boundingBox, &mesh, 20);
@@ -114,7 +115,7 @@ void ofApp::draw(){
 	ofBackground(ofColor::black);
 //	cout << ofGetFrameRate() << endl;
 
-	cam.begin();
+	mainCam.begin();
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -159,7 +160,7 @@ void ofApp::draw(){
 	ps->draw();
 
 	ofPopMatrix();
-	cam.end();
+	mainCam.end();
 }
 
 // 
@@ -195,15 +196,15 @@ void ofApp::keyPressed(int key) {
 	switch (key) {
 	case 'C':
 	case 'c':
-		if (cam.getMouseInputEnabled()) cam.disableMouseInput();
-		else cam.enableMouseInput();
+		if (mainCam.getMouseInputEnabled()) mainCam.disableMouseInput();
+		else mainCam.enableMouseInput();
 		break;
 	case 'F':
 	case 'f':
 		ofToggleFullscreen();
 		break;
 	case 'r':
-            cameras.data()->reset();
+		mainCam.reset();
 		break;
 	case 's':
 		savePicture();
@@ -219,21 +220,39 @@ void ofApp::keyPressed(int key) {
 		toggleWireframeMode();
 		break;
 	case OF_KEY_ALT:
-		cam.enableMouseInput();
+		mainCam.enableMouseInput();
 		bAltKeyDown = true;
 		break;
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
 		break;
-//    case OF_KEY_SHIFT:
-//        break;
-//    case OF_KEY_DEL:
-//        break;
+    case OF_KEY_SHIFT:
+        break;
+    case OF_KEY_DEL:
+        break;
 	case GLFW_KEY_SPACE:
 		octree->undraw();
 		break;
     case '1':
-            
+		//Freefloating camera is index 0
+		mainCam = cameras.cams.at(0);
+		break;
+	case '2':
+		//Fixed position camera 1 is index 1
+		mainCam = cameras.cams.at(1);
+		break;
+	case '3':
+		//Fixed position camera 2 is index 2
+		mainCam = cameras.cams.at(2);
+		break;
+	case '4':
+		//Side Rocket cameras is index 3
+		mainCam = cameras.cams.at(3);
+		break;
+	case '5':
+		//Bottom rocket camera is index 4
+		mainCam = cameras.cams.at(4);
+		break;
 	default:
 		break;
 	}
@@ -256,7 +275,7 @@ void ofApp::keyReleased(int key) {
 	switch (key) {
 	
 	case OF_KEY_ALT:
-		cam.disableMouseInput();
+		mainCam.disableMouseInput();
 		bAltKeyDown = false;
 		break;
 	case OF_KEY_CONTROL:
@@ -283,8 +302,8 @@ void ofApp::mousePressed(int x, int y, int button) {
 	if (bAltKeyDown) return;
 
     ofVec3f mouse(mouseX, mouseY);
-	ofVec3f rayPoint = cam.screenToWorld(mouse);
-	ofVec3f rayDir = rayPoint - cam.getPosition();
+	ofVec3f rayPoint = mainCam.screenToWorld(mouse);
+	ofVec3f rayDir = rayPoint - mainCam.getPosition();
 	rayDir.normalize();
 	Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z),
 		Vector3(rayDir.x, rayDir.y, rayDir.z));
@@ -374,7 +393,7 @@ bool ofApp::doPointSelection() {
 	//
 	for (int i = 0; i < n; i++) {
 		ofVec3f vert = mesh.getVertex(i);
-		ofVec3f posScreen = cam.worldToScreen(vert);
+		ofVec3f posScreen = mainCam.worldToScreen(vert);
 		float distance = posScreen.distance(mouse);
 		if (distance < selectionRange) {
 			selection.push_back(vert);
@@ -388,7 +407,7 @@ bool ofApp::doPointSelection() {
 	if (bPointSelected) {
 		float distance = 0;
 		for (int i = 0; i < selection.size(); i++) {
-			ofVec3f point =  cam.worldToCamera(selection[i]);
+			ofVec3f point =  mainCam.worldToCamera(selection[i]);
 
 			// In camera space, the camera is at (0,0,0), so distance from 
 			// the camera is simply the length of the point vector
@@ -407,7 +426,7 @@ bool ofApp::doPointSelection() {
 // Set the camera to use the selected point as it's new target
 //  
 void ofApp::setCameraTarget() {
-
+	mainCam.setTarget(ofVec3f(10,10,10));
 }
 
 
@@ -486,7 +505,7 @@ void ofApp::savePicture() {
 void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 	ofVec3f point;
-	mouseIntersectPlane(ofVec3f(0, 0, 0), cam.getZAxis(), point);
+	mouseIntersectPlane(ofVec3f(0, 0, 0), mainCam.getZAxis(), point);
 
 	if (rover.loadModel(dragInfo.files[0])) {
 		rover.setScaleNormalization(false);
@@ -499,8 +518,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 bool ofApp::mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point) {
 	ofVec2f mouse(mouseX, mouseY);
-	ofVec3f rayPoint = cam.screenToWorld(mouse);
-	ofVec3f rayDir = rayPoint - cam.getPosition();
+	ofVec3f rayPoint = mainCam.screenToWorld(mouse);
+	ofVec3f rayDir = rayPoint - mainCam.getPosition();
 	rayDir.normalize();
 	return (rayIntersectPlane(rayPoint, rayDir, planePoint, planeNorm, point));
 }

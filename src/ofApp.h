@@ -5,6 +5,7 @@
 #include "box.h"
 #include "ray.h"
 #include "Octree.h"
+#include "Camera.hpp"
 #include "ParticleEmitter.h"
 
 class ofApp : public ofBaseApp{
@@ -35,12 +36,13 @@ class ofApp : public ofBaseApp{
 		bool  doPointSelection();
 		void drawBox(const Box &box);
 		Box meshBounds(const ofMesh &);
-		void subDivideBox8(const Box &b, vector<Box> & boxList);
+		//void subDivideBox8(const Box &b, vector<Box> & boxList);
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
-		ofEasyCam cam;
-        vector<ofEasyCam> cameras;
+		ofEasyCam mainCam;
+		Camera cameras;
+
 		ofxAssimpModelLoader mars, rover;
 		ofLight light;
 		Box* boundingBox;

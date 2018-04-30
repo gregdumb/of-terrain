@@ -8,6 +8,20 @@
 #pragma once
 
 #include <stdio.h>
-#include <ofMain.h>
+#include "ofMain.h"
+
+class Camera {
+public:
+	vector<ofEasyCam> cams;
+	void setup();
+	void draw();
+
+private:
+	ofEasyCam floatingCam;
+	ofEasyCam fixedCam1;
+	ofEasyCam fixedCam2;
+	ofEasyCam sideRocketCam;
+	ofEasyCam botRocketCam;
+};
 
 
