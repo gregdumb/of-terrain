@@ -23,6 +23,12 @@
 //  Date: <date of last version>
 
 
+/*
+ Edit Date: April 29th, 2018
+ Comments: Added easy cameras to look at a moving object
+ Author: Craig Huff
+ */
+
 #include "ofApp.h"
 #include "Util.h"
 
@@ -39,7 +45,8 @@ void ofApp::setup(){
 	bRoverLoaded = false;
 	bTerrainSelected = true;
 //	ofSetWindowShape(1024, 768);
-	cam.setDistance(10);
+    cameras.push_back(cam);
+	cameras.data()->setDistance(10);
 	cam.setNearClip(.1);
 	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
 	ofSetVerticalSync(true);
@@ -52,7 +59,7 @@ void ofApp::setup(){
 	initLightingAndMaterials();
 
 	//mars.loadModel("geo/mars-low-v2.obj");
-	mars.loadModel("flats.obj", true);
+	mars.loadModel("flats.obj");
 	mars.setScaleNormalization(false);
 	float scale = 2.5;
 	//mars.setScale(scale, scale, scale);
@@ -66,9 +73,17 @@ void ofApp::setup(){
 	cout << "Landscape has " << mars.getMesh(0).getNumVertices() << " verts" << endl;
 
 	uint64_t startTime = ofGetElapsedTimeMillis();
-
-	octree = new Octree(boundingBox, &mars.getMesh(0), 20);
-
+   
+    /*
+     For Some reason Xcode won't build with the line...
+     octree = new Octree(boundingBox, &mars.getMesh(0), 20);
+     
+     So I created it as its own object and then pass the reference
+     to the Octree Constructor. @cthuff
+    */
+    ofMesh mesh = mars.getMesh(0);
+    octree = new Octree(boundingBox, &mesh, 20);
+    
 	uint64_t endTime = ofGetElapsedTimeMillis();
 
 	cout << "Octree build took " << endTime - startTime << " ms" << endl;
@@ -187,11 +202,8 @@ void ofApp::keyPressed(int key) {
 	case 'f':
 		ofToggleFullscreen();
 		break;
-	case 'H':
-	case 'h':
-		break;
 	case 'r':
-		cam.reset();
+            cameras.data()->reset();
 		break;
 	case 's':
 		savePicture();
@@ -199,12 +211,9 @@ void ofApp::keyPressed(int key) {
 	case 't':
 		setCameraTarget();
 		break;
-	case 'u':
-		break;
-	case 'v':
-		togglePointsDisplay();
-		break;
 	case 'V':
+    case 'v':
+		togglePointsDisplay();
 		break;
 	case 'w':
 		toggleWireframeMode();
@@ -216,13 +225,15 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
 		break;
-	case OF_KEY_SHIFT:
-		break;
-	case OF_KEY_DEL:
-		break;
+//    case OF_KEY_SHIFT:
+//        break;
+//    case OF_KEY_DEL:
+//        break;
 	case GLFW_KEY_SPACE:
 		octree->undraw();
 		break;
+    case '1':
+            
 	default:
 		break;
 	}

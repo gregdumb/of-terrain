@@ -40,6 +40,7 @@ class ofApp : public ofBaseApp{
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
 		ofEasyCam cam;
+        vector<ofEasyCam> cameras;
 		ofxAssimpModelLoader mars, rover;
 		ofLight light;
 		Box* boundingBox;
