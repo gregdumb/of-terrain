@@ -64,6 +64,9 @@
     <ClCompile Include="src\TransformObject.cpp">
       <Filter>src\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="src\TransformObject.h">
       <Filter>src\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

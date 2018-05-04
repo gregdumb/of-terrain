@@ -6,6 +6,7 @@
 #include "ray.h"
 #include "Octree.h"
 #include "ParticleEmitter.h"
+#include "Player.h"
 
 class ofApp : public ofBaseApp{
 
@@ -57,10 +58,13 @@ class ofApp : public ofBaseApp{
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
 
+		map<int, bool> keys;
 
 		const float selectionRange = 4.0;
 
 		Octree* octree;
 
 		ParticleEmitter* ps;
+
+		Player* player;
 };

@@ -26,7 +26,6 @@
 #include "ofApp.h"
 #include "Util.h"
 
-
 //--------------------------------------------------------------
 // setup scene, lighting, state and load geometry
 //
@@ -67,7 +66,7 @@ void ofApp::setup(){
 
 	uint64_t startTime = ofGetElapsedTimeMillis();
 
-	octree = new Octree(boundingBox, &mars.getMesh(0), 20);
+	octree = new Octree(boundingBox, &mars.getMesh(0), 5);
 
 	uint64_t endTime = ofGetElapsedTimeMillis();
 
@@ -82,15 +81,26 @@ void ofApp::setup(){
 	ps->setVelocity(ofVec3f(0, -1, 0));
 	ps->particleColor = ofColor::blue;
 	
+	//ps->start();
 
-	ps->start();
+	player = new Player();
 }
 
 //--------------------------------------------------------------
 // incrementally update scene (animation)
 //
 void ofApp::update() {
-	ps->update();
+	//ps->update();
+
+	player->clearForce();
+
+	// Update keys
+	if (keys[OF_KEY_UP])      player->addForce(ofVec3f(0, 0, -1));
+	if (keys[OF_KEY_DOWN])    player->addForce(ofVec3f(0, 0, 1));
+	if (keys[OF_KEY_LEFT])    player->addForce(ofVec3f(-1, 0, 0));
+	if (keys[OF_KEY_RIGHT])   player->addForce(ofVec3f(1, 0, 0));
+	if (keys[GLFW_KEY_SPACE]) player->addForce(ofVec3f(0, 1, 0));
+
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -141,7 +151,9 @@ void ofApp::draw(){
 	
 	octree->draw();
 
-	ps->draw();
+	//ps->draw();
+
+	player->draw();
 
 	ofPopMatrix();
 	cam.end();
@@ -176,6 +188,8 @@ void ofApp::drawAxis(ofVec3f location) {
 
 
 void ofApp::keyPressed(int key) {
+
+	keys[key] = true;
 
 	switch (key) {
 	case 'C':
@@ -221,7 +235,7 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_DEL:
 		break;
 	case GLFW_KEY_SPACE:
-		octree->undraw();
+		//octree->undraw();
 		break;
 	default:
 		break;
@@ -241,6 +255,8 @@ void ofApp::togglePointsDisplay() {
 }
 
 void ofApp::keyReleased(int key) {
+
+	keys[key] = false;
 
 	switch (key) {
 	
