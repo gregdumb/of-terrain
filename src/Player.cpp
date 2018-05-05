@@ -52,9 +52,7 @@ void Player::draw() {
 	playerMesh->drawFaces();
 
 	// Particle system
-	ofVec3f psPos = position;
-	cout << "PS: " << psPos.x << " " << psPos.y << " " << psPos.z << endl;
-	ps->setPosition(psPos);
+	ps->setPosition(position + psOffset);
 	ps->update();
 	ps->draw();
 }
