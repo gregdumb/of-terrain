@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include <algorithm>
 
 Player::Player(Octree* octree) {
 
@@ -7,7 +7,7 @@ Player::Player(Octree* octree) {
 
 	// Mesh
 	playerMesh = new ofxAssimpModelLoader();
-	playerMesh->loadModel("monkey.obj");
+	playerMesh->loadModel("ship.obj");
 	playerMesh->setScaleNormalization(false);
 	
 	// Physics
@@ -17,6 +17,9 @@ Player::Player(Octree* octree) {
 
 	altitude = 0;
 	touchingFloor = false;
+
+	groundPoints.push_back(ofVec3f(0, -0.3, 0));
+	groundPoints.push_back(ofVec3f(0, -0.35, 1));
 
 	// Particle System
 	ps = new ParticleEmitter();
@@ -28,7 +31,7 @@ Player::Player(Octree* octree) {
 	ps->particleColor = ofColor::orange;
 	ps->start();
 
-	psOffset = ofVec3f(0, -0.5, 0);
+	psOffset = ofVec3f(0, 0, -1);
 }
 
 
@@ -55,7 +58,7 @@ void Player::update() {
 	position = position + velocity * deltaTime();
 
 	// Check altitude
-	Ray ray = Ray(Vector3::vectorify(position), Vector3(0, -1, 0));
+	Ray ray = Ray(Vector3::vectorify(position + ofVec3f(0, 10, 0)), Vector3(0, -1, 0));
 	vector<Node*> hitNodes = octree->checkIntersection(ray);
 	if (hitNodes.size() > 0) {
 		ofVec3f hitLoc = hitNodes.at(0)->getCenter();
@@ -65,16 +68,33 @@ void Player::update() {
 		altitude = height;
 	}
 
+	vector<float> altitudes;
+
 	// Check collision
-	vector<Node*> touchedNodes = octree->checkPoint(position);
-	if (touchedNodes.size() > 0) {
-		ofVec3f hitLoc = touchedNodes.at(0)->getCenter();
-		cout << "Touched the floor at " << hitLoc.x << ", " << hitLoc.y << ", " << hitLoc.z << endl;
-		touchingFloor = true;
+	for (ofVec3f gp : groundPoints) {
+
+		ofVec3f startLoc = position + gp;
+		Ray ray = Ray(Vector3::vectorify(startLoc + ofVec3f(0, 10, 0)), Vector3(0, -1, 0));
+
+		vector<Node*> hitNodes = octree->checkIntersection(ray);
+
+		if (hitNodes.size() > 0) {
+			ofVec3f hitLoc = hitNodes.at(0)->getCenter();
+			float height = startLoc.y - hitLoc.y;
+			altitudes.push_back(height);
+		}
+	}
+
+	if (altitudes.size() > 0) {
+		auto minAlt = std::min_element(altitudes.begin(), altitudes.end());
+		altitude = *minAlt;
 	}
 	else {
-		touchingFloor = false;
+		altitude = 99999;
 	}
+
+	if (altitude <= 0) position.y += -altitude;
+	else touchingFloor = false;
 }
 
 void Player::draw() {

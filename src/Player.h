@@ -28,6 +28,8 @@ private:
 	Octree* octree;
 	bool touchingFloor;
 
+	vector<ofVec3f> groundPoints;
+
 	// Particle System
 	ParticleEmitter* ps;
 	ofVec3f psOffset;
