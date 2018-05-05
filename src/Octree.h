@@ -61,6 +61,11 @@ public:
 		}
 	}
 
+	ofVec3f getCenter() {
+		if (box) return box->getCenter();
+		else return ofVec3f(0, 0, 0);
+	}
+
 	bool isLeaf() {
 		return children[0] == nullptr;
 	}

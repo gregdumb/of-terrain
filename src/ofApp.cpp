@@ -83,7 +83,7 @@ void ofApp::setup(){
 	
 	//ps->start();
 
-	player = new Player();
+	player = new Player(octree);
 }
 
 //--------------------------------------------------------------
@@ -91,6 +91,8 @@ void ofApp::setup(){
 //
 void ofApp::update() {
 	//ps->update();
+
+	player->update();
 
 	player->clearForce();
 
@@ -100,18 +102,6 @@ void ofApp::update() {
 	if (keys[OF_KEY_LEFT])    player->addForce(ofVec3f(-1, 0, 0));
 	if (keys[OF_KEY_RIGHT])   player->addForce(ofVec3f(1, 0, 0));
 	if (keys[GLFW_KEY_SPACE]) player->addForce(ofVec3f(0, 1, 0));
-
-	// Do raycast
-	playerLoc = player->getPosition();
-	belowGround = playerLoc - ofVec3f(0, 10, 0);
-
-	Ray ray = Ray(vectorify(playerLoc), vectorify(ofVec3f(0, -1, 0)));
-
-	vector<Node*> hitNodes = octree->checkIntersection(ray);
-	if (hitNodes.size() > 0) {
-		cout << "Hit the floor" << endl;
-	}
-
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -161,8 +151,6 @@ void ofApp::draw(){
 	ofSetColor(ofColor::white);
 	
 	octree->draw();
-
-	ofDrawLine(ofPoint(playerLoc), ofPoint(belowGround));
 
 	player->draw();
 
@@ -522,6 +510,3 @@ bool ofApp::mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &
 	return (rayIntersectPlane(rayPoint, rayDir, planePoint, planeNorm, point));
 }
 
-Vector3 ofApp::vectorify(ofVec3f ofVec) {
-	return Vector3(ofVec.x, ofVec.y, ofVec.z);
-}

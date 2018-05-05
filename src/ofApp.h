@@ -67,7 +67,4 @@ class ofApp : public ofBaseApp{
 		ParticleEmitter* ps;
 
 		Player* player;
-
-		ofVec3f playerLoc;
-		ofVec3f belowGround;
 };

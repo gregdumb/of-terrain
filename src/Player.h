@@ -3,15 +3,17 @@
 #include "ofMain.h"
 #include  "ofxAssimpModelLoader.h"
 #include "ParticleEmitter.h"
+#include "Octree.h"
 
 class Player
 {
 public:
-	Player();
+	Player(Octree* octree);
 	~Player();
 
 	ofxAssimpModelLoader* playerMesh;
 
+	void update();
 	void draw();
 
 	ofVec3f getPosition();
@@ -22,6 +24,8 @@ public:
 	float altitude;
 
 private:
+
+	Octree* octree;
 
 	// Particle System
 	ParticleEmitter* ps;

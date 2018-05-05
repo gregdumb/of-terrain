@@ -2,6 +2,7 @@
 #define _VECTOR3_H_
 
 #include <math.h>
+#include "ofMain.h"
 
 class Vector3 {
   public:
@@ -72,6 +73,10 @@ class Vector3 {
     bool operator<=(const Vector3 &op2) const {
       return (d[0] <= op2.d[0] && d[1] <= op2.d[1] && d[2] <= op2.d[2]);
     }
+
+	static Vector3 vectorify(ofVec3f ofVec) {
+		return Vector3(ofVec.x, ofVec.y, ofVec.z);
+	}
   
   private:
     float d[3];

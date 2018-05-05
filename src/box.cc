@@ -38,6 +38,7 @@ bool Box::intersect(const Ray &r, float t0, float t1) const {
 
 ofVec3f Box::getCenter() {
 
-	return ofVec3f(0, 0, 0);
-
+	Vector3 center = (this->min() + this->max()) / 2;
+	
+	return ofVec3f(center.x(), center.y(), center.z());
 }

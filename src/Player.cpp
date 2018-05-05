@@ -1,7 +1,10 @@
 #include "Player.h"
 
 
-Player::Player() {
+Player::Player(Octree* octree) {
+
+	this->octree = octree;
+
 	// Mesh
 	playerMesh = new ofxAssimpModelLoader();
 	playerMesh->loadModel("monkey.obj");
@@ -43,6 +46,19 @@ void Player::clearForce() {
 	inputForce= ofVec3f(0, 0, 0);
 }
 
+void Player::update() {
+	Ray ray = Ray(Vector3::vectorify(position), Vector3(0, -1, 0));
+
+	vector<Node*> hitNodes = octree->checkIntersection(ray);
+	if (hitNodes.size() > 0) {
+		ofVec3f hitLoc = hitNodes.at(0)->getCenter();
+		//cout << "Hit the floor at " << hitLoc.x << ", " << hitLoc.y << ", " << hitLoc.z << endl;
+
+		float height = position.y - hitLoc.y;
+		altitude = height;
+	}
+}
+
 void Player::draw() {
 	// f = m * a, a = f/m
 	// v = v + a*t
@@ -61,4 +77,6 @@ void Player::draw() {
 	ps->setPosition(position + psOffset);
 	ps->update();
 	ps->draw();
+
+	cout << "Altitude: " << altitude << endl;
 }
