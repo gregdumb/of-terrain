@@ -14,8 +14,12 @@ public:
 
 	void draw();
 
+	ofVec3f getPosition();
+
 	void addForce(ofVec3f f);
 	void clearForce();
+
+	float altitude;
 
 private:
 

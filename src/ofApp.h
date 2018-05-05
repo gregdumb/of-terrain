@@ -36,7 +36,7 @@ class ofApp : public ofBaseApp{
 		bool  doPointSelection();
 		void drawBox(const Box &box);
 		Box meshBounds(const ofMesh &);
-		void subDivideBox8(const Box &b, vector<Box> & boxList);
+		Vector3 vectorify(ofVec3f ofVec);
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
@@ -67,4 +67,7 @@ class ofApp : public ofBaseApp{
 		ParticleEmitter* ps;
 
 		Player* player;
+
+		ofVec3f playerLoc;
+		ofVec3f belowGround;
 };

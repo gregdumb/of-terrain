@@ -42,7 +42,7 @@ public:
 				children[i] = new Node(childBoxes.at(i), mesh, depth + 1, maxDepth, verts);
 			}
 		}
-		else if (verts.size() == 1 || depth == maxDepth) {
+		else if (verts.size() == 1) {
 			last = true;
 		}
 	}
@@ -148,14 +148,18 @@ public:
 		head->undraw();
 	}
 
-	void checkIntersection(Ray ray) {
+	vector<Node*> checkIntersection(Ray ray) {
 		
 		vector<Node*> leafs;
 
 		head->checkIntersection(ray, leafs);
 
 		for (Node* l : leafs) {
-			cout << "Hit leaf of depth " << l->depth << endl;
+			if (l->verts.size() > 0) {
+				//cout << "Hit leaf of depth " << l->depth << endl;
+			}
 		}
+
+		return leafs;
 	}
 };

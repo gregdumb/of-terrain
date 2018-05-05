@@ -12,6 +12,8 @@ Player::Player() {
 	gravity = ofVec3f(0, 0, 0);
 	mass = 1;
 
+	altitude = 0;
+
 	// Particle System
 	ps = new ParticleEmitter();
 	ps->type = EmitterType::RadialEmitter;
@@ -27,6 +29,10 @@ Player::Player() {
 
 
 Player::~Player() {
+}
+
+ofVec3f Player::getPosition() {
+	return position;
 }
 
 void Player::addForce(ofVec3f f) {
