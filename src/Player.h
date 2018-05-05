@@ -26,6 +26,7 @@ public:
 private:
 
 	Octree* octree;
+	bool touchingFloor;
 
 	// Particle System
 	ParticleEmitter* ps;
@@ -42,5 +43,7 @@ private:
 	ofVec3f velocity;
 	ofVec3f acceleration;
 	ofVec3f force;
+
+	float deltaTime();
 };
 

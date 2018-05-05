@@ -61,6 +61,20 @@ public:
 		}
 	}
 
+	void checkPoint(ofVec3f point, vector<Node*> & leafsHit) {
+		if (this->box->pointInside(point)) {
+			//shouldDraw = true;
+			if (!isLeaf()) {
+				for (Node* c : children) {
+					c->checkPoint(point, leafsHit);
+				}
+			}
+			else if (last) {
+				leafsHit.push_back(this);
+			}
+		}
+	}
+
 	ofVec3f getCenter() {
 		if (box) return box->getCenter();
 		else return ofVec3f(0, 0, 0);
@@ -165,6 +179,12 @@ public:
 			}
 		}
 
+		return leafs;
+	}
+
+	vector<Node*> checkPoint(ofVec3f point) {
+		vector<Node*> leafs;
+		head->checkPoint(point, leafs);
 		return leafs;
 	}
 };

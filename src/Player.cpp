@@ -11,11 +11,12 @@ Player::Player(Octree* octree) {
 	playerMesh->setScaleNormalization(false);
 	
 	// Physics
-	position = ofVec3f(0, 3, 0);
-	gravity = ofVec3f(0, 0, 0);
+	position = ofVec3f(0.1, 1, 0.1);
+	gravity = ofVec3f(0, -0.1, 0);
 	mass = 1;
 
 	altitude = 0;
+	touchingFloor = false;
 
 	// Particle System
 	ps = new ParticleEmitter();
@@ -47,8 +48,14 @@ void Player::clearForce() {
 }
 
 void Player::update() {
-	Ray ray = Ray(Vector3::vectorify(position), Vector3(0, -1, 0));
+	// Perform integration
+	force = inputForce + gravity + (touchingFloor ? ofVec3f(0, 1, 0) : ofVec3f(0, 0, 0));
+	acceleration = force * mass;
+	velocity = (velocity + acceleration * deltaTime()) * 0.99f;
+	position = position + velocity * deltaTime();
 
+	// Check altitude
+	Ray ray = Ray(Vector3::vectorify(position), Vector3(0, -1, 0));
 	vector<Node*> hitNodes = octree->checkIntersection(ray);
 	if (hitNodes.size() > 0) {
 		ofVec3f hitLoc = hitNodes.at(0)->getCenter();
@@ -57,18 +64,23 @@ void Player::update() {
 		float height = position.y - hitLoc.y;
 		altitude = height;
 	}
+
+	// Check collision
+	vector<Node*> touchedNodes = octree->checkPoint(position);
+	if (touchedNodes.size() > 0) {
+		ofVec3f hitLoc = touchedNodes.at(0)->getCenter();
+		cout << "Touched the floor at " << hitLoc.x << ", " << hitLoc.y << ", " << hitLoc.z << endl;
+		touchingFloor = true;
+	}
+	else {
+		touchingFloor = false;
+	}
 }
 
 void Player::draw() {
 	// f = m * a, a = f/m
 	// v = v + a*t
 	// x = x + v*t
-
-	// Perform integration
-	force = inputForce + gravity;
-	acceleration = force * mass;
-	velocity = (velocity + acceleration * ofGetLastFrameTime()) * 0.99f;
-	position = position + velocity * ofGetLastFrameTime();
 
 	playerMesh->setPosition(position.x, position.y, position.z);
 	playerMesh->drawFaces();
@@ -79,4 +91,11 @@ void Player::draw() {
 	ps->draw();
 
 	cout << "Altitude: " << altitude << endl;
+}
+
+float Player::deltaTime() {
+	float lastFrameTime = ofGetLastFrameTime();
+
+	if (lastFrameTime < 1) return lastFrameTime;
+	else return 0;
 }
