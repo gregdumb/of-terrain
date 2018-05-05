@@ -18,8 +18,9 @@ Player::Player(Octree* octree) {
 	altitude = 0;
 	touchingFloor = false;
 
-	groundPoints.push_back(ofVec3f(0, -0.3, 0));
-	groundPoints.push_back(ofVec3f(0, -0.35, 1));
+	groundPoints.push_back(ofVec3f(0, -0.3, 0));  // Center
+	groundPoints.push_back(ofVec3f(0, -0.35, 1)); // Front
+	groundPoints.push_back(ofVec3f(0, -0.15, -1.1)); // Back
 
 	// Particle System
 	ps = new ParticleEmitter();
@@ -52,30 +53,17 @@ void Player::clearForce() {
 
 void Player::update() {
 	// Perform integration
-	force = inputForce + gravity + (touchingFloor ? ofVec3f(0, 1, 0) : ofVec3f(0, 0, 0));
+	force = inputForce + (touchingFloor ? ofVec3f(0, 0, 0) : gravity);
 	acceleration = force * mass;
 	velocity = (velocity + acceleration * deltaTime()) * 0.99f;
 	position = position + velocity * deltaTime();
 
-	// Check altitude
-	Ray ray = Ray(Vector3::vectorify(position + ofVec3f(0, 10, 0)), Vector3(0, -1, 0));
-	vector<Node*> hitNodes = octree->checkIntersection(ray);
-	if (hitNodes.size() > 0) {
-		ofVec3f hitLoc = hitNodes.at(0)->getCenter();
-		//cout << "Hit the floor at " << hitLoc.x << ", " << hitLoc.y << ", " << hitLoc.z << endl;
-
-		float height = position.y - hitLoc.y;
-		altitude = height;
-	}
-
 	vector<float> altitudes;
 
-	// Check collision
+	// Check collision & altitude
 	for (ofVec3f gp : groundPoints) {
-
 		ofVec3f startLoc = position + gp;
 		Ray ray = Ray(Vector3::vectorify(startLoc + ofVec3f(0, 10, 0)), Vector3(0, -1, 0));
-
 		vector<Node*> hitNodes = octree->checkIntersection(ray);
 
 		if (hitNodes.size() > 0) {
@@ -93,7 +81,13 @@ void Player::update() {
 		altitude = 99999;
 	}
 
-	if (altitude <= 0) position.y += -altitude;
+	if (altitude <= 0) {
+		touchingFloor = true;
+		float up = 3 * deltaTime();
+		if (up > -altitude) up = -altitude;
+
+		position.y += up;
+	}
 	else touchingFloor = false;
 }
 
