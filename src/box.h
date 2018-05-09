@@ -100,6 +100,8 @@ class Box {
 		return (v.x > minX && v.y > minY && v.z > minZ &&
 			v.x < maxX && v.y < maxY && v.z < maxZ);
 	}
+
+	ofVec3f getCenter();
 };
 
 #endif // _BOX_H_

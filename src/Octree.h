@@ -42,7 +42,7 @@ public:
 				children[i] = new Node(childBoxes.at(i), mesh, depth + 1, maxDepth, verts);
 			}
 		}
-		else if (verts.size() == 1 || depth == maxDepth) {
+		else if (verts.size() == 1) {
 			last = true;
 		}
 	}
@@ -59,6 +59,25 @@ public:
 				leafsHit.push_back(this);
 			}
 		}
+	}
+
+	void checkPoint(ofVec3f point, vector<Node*> & leafsHit) {
+		if (this->box->pointInside(point)) {
+			//shouldDraw = true;
+			if (!isLeaf()) {
+				for (Node* c : children) {
+					c->checkPoint(point, leafsHit);
+				}
+			}
+			else if (last) {
+				leafsHit.push_back(this);
+			}
+		}
+	}
+
+	ofVec3f getCenter() {
+		if (box) return box->getCenter();
+		else return ofVec3f(0, 0, 0);
 	}
 
 	bool isLeaf() {
@@ -148,14 +167,24 @@ public:
 		head->undraw();
 	}
 
-	void checkIntersection(Ray ray) {
+	vector<Node*> checkIntersection(Ray ray) {
 		
 		vector<Node*> leafs;
 
 		head->checkIntersection(ray, leafs);
 
 		for (Node* l : leafs) {
-			cout << "Hit leaf of depth " << l->depth << endl;
+			if (l->verts.size() > 0) {
+				//cout << "Hit leaf of depth " << l->depth << endl;
+			}
 		}
+
+		return leafs;
+	}
+
+	vector<Node*> checkPoint(ofVec3f point) {
+		vector<Node*> leafs;
+		head->checkPoint(point, leafs);
+		return leafs;
 	}
 };
