@@ -64,6 +64,7 @@
     <ClCompile Include="src\TransformObject.cpp">
       <Filter>src\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
     <ClCompile Include="src\Player.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -287,7 +288,8 @@
     <ClInclude Include="src\TransformObject.h">
       <Filter>src\Particles</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player.h">
+
+    <ClInclude Include="src\Camera.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
