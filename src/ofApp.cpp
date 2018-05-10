@@ -31,6 +31,8 @@
 //
 void ofApp::setup(){
 
+	shader.load("shadersGL3/shader");
+
 	bWireframe = false;
 	bDisplayPoints = false;
 	bAltKeyDown = false;
@@ -81,7 +83,7 @@ void ofApp::setup(){
 	ps->setVelocity(ofVec3f(0, -1, 0));
 	ps->particleColor = ofColor::blue;
 	
-	//ps->start();
+	ps->start();
 
 	player = new Player(octree);
 
@@ -160,9 +162,11 @@ void ofApp::draw(){
 	ofSetColor(ofColor::white);
 	
 	octree->draw();
-
+	
 	player->draw();
-
+	shader.begin();
+	ps->draw();
+	shader.end();
 	ofPopMatrix();
 	cam.end();
 }
