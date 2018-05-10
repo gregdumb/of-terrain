@@ -39,7 +39,7 @@ Player::Player(Octree* octree) {
 	ps->particleRadius = 0.025;
 	ps->setLifespan(1);
 	ps->setVelocity(ofVec3f(0, 0, 0));
-	ps->particleColor = ofColor::blue;
+	ps->particleColor = ofColor(0, 255, 255);
 	ps->sys->addForce(tf);
 
 	psOffset = ofVec3f(0, -0.1, 0); // ofVec3f(0, 0, -1);
