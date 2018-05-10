@@ -172,7 +172,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\box.cc" />
-    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\..\..\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
@@ -197,7 +196,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\box.h" />
-    <ClInclude Include="src\Camera.hpp" />
     <ClInclude Include="src\Octree.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
