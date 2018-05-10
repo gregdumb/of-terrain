@@ -70,4 +70,6 @@ class ofApp : public ofBaseApp{
 
 		// HUD
 		ofTrueTypeFont* font;
+
+		ofShader shader;
 };
