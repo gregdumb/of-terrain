@@ -163,10 +163,12 @@ void ofApp::draw(){
 	
 	octree->draw();
 	
+	//shader.begin();
 	player->draw();
-	shader.begin();
-	ps->draw();
-	shader.end();
+	//shader.end();
+	
+	//ps->draw();
+	
 	ofPopMatrix();
 	cam.end();
 }
