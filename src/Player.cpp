@@ -22,21 +22,39 @@ Player::Player(Octree* octree) {
 	groundPoints.push_back(ofVec3f(0, -0.35, 1)); // Front
 	groundPoints.push_back(ofVec3f(0, -0.15, -1.1)); // Back
 
+	// Sound
+	thrusterSoundPlayer.load("thrusters.wav");
+	thrusterSoundPlayer.setLoop(true);
+
 	// Particle System
+	float maxT = 10;
+	TurbulenceForce* tf = new TurbulenceForce(ofVec3f(-maxT, 0, -maxT), ofVec3f(maxT, 0, maxT));
+
 	ps = new ParticleEmitter();
 	ps->type = EmitterType::RadialEmitter;
-	ps->setRate(20);
-	ps->particleRadius = 0.1;
+	ps->visible = false;
+	ps->setRate(100);
+	ps->particleRadius = 0.025;
 	ps->setLifespan(1);
-	ps->setVelocity(ofVec3f(0, -1, 0));
-	ps->particleColor = ofColor::orange;
-	ps->start();
+	ps->setVelocity(ofVec3f(0, 0, 0));
+	ps->particleColor = ofColor::blue;
+	ps->sys->addForce(tf);
 
-	psOffset = ofVec3f(0, 0, -1);
+	psOffset = ofVec3f(0, -0.1, 0); // ofVec3f(0, 0, -1);
 }
 
 
 Player::~Player() {
+}
+
+void Player::startThrust() {
+	if (!ps->started) ps->start();
+	if (!thrusterSoundPlayer.isPlaying()) thrusterSoundPlayer.play();
+}
+
+void Player::stopThrust() {
+	if (ps->started) ps->stop();
+	if (thrusterSoundPlayer.isPlaying()) thrusterSoundPlayer.stop();
 }
 
 ofVec3f Player::getPosition() {

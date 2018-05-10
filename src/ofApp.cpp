@@ -102,6 +102,9 @@ void ofApp::update() {
 	if (keys[OF_KEY_LEFT])    player->addForce(ofVec3f(-1, 0, 0));
 	if (keys[OF_KEY_RIGHT])   player->addForce(ofVec3f(1, 0, 0));
 	if (keys[GLFW_KEY_SPACE]) player->addForce(ofVec3f(0, 1, 0));
+
+	if (keys[GLFW_KEY_SPACE]) player->startThrust();
+	else                      player->stopThrust();
 }
 //--------------------------------------------------------------
 void ofApp::draw(){

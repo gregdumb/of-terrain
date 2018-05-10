@@ -49,7 +49,7 @@ public:
 
 	void checkIntersection(Ray ray, vector<Node*> & leafsHit) {
 		if (this->box->intersect(ray, -100, 100)) {
-			shouldDraw = true;
+			//shouldDraw = true;
 			if (!isLeaf()) {
 				for (Node* c : children) {
 					c->checkIntersection(ray, leafsHit);

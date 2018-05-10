@@ -23,6 +23,9 @@ public:
 
 	float altitude;
 
+	void startThrust();
+	void stopThrust();
+
 private:
 
 	Octree* octree;
@@ -33,6 +36,9 @@ private:
 	// Particle System
 	ParticleEmitter* ps;
 	ofVec3f psOffset;
+
+	// Sound
+	ofSoundPlayer thrusterSoundPlayer;
 
 	// Physics
 
