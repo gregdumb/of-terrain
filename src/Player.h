@@ -41,7 +41,6 @@ private:
 	ofSoundPlayer thrusterSoundPlayer;
 
 	// Physics
-
 	float mass;
 
 	ofVec3f inputForce;

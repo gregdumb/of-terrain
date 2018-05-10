@@ -67,4 +67,7 @@ class ofApp : public ofBaseApp{
 		ParticleEmitter* ps;
 
 		Player* player;
+
+		// HUD
+		ofTrueTypeFont* font;
 };

@@ -84,13 +84,15 @@ void ofApp::setup(){
 	//ps->start();
 
 	player = new Player(octree);
+
+	font = new ofTrueTypeFont();
+	font->loadFont("PROMETHEUS.ttf", 20);
 }
 
 //--------------------------------------------------------------
 // incrementally update scene (animation)
 //
 void ofApp::update() {
-	//ps->update();
 
 	player->update();
 
@@ -109,9 +111,13 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-//	ofBackgroundGradient(ofColor(20), ofColor(0));   // pick your own backgroujnd
-	ofBackground(ofColor::black);
+	ofBackgroundGradient(ofColor(0, 42, 156), ofColor::black);   // pick your own backgroujnd
+//	ofBackground(ofColor::black);
 //	cout << ofGetFrameRate() << endl;
+
+	ofSetColor(ofColor::white);
+	string altStr = "ALTITUDE - " + to_string(player->altitude);
+	font->drawString(altStr, 20, 40);
 
 	cam.begin();
 	ofPushMatrix();

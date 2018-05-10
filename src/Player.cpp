@@ -9,6 +9,8 @@ Player::Player(Octree* octree) {
 	playerMesh = new ofxAssimpModelLoader();
 	playerMesh->loadModel("ship.obj");
 	playerMesh->setScaleNormalization(false);
+
+	// HUD
 	
 	// Physics
 	position = ofVec3f(0.1, 1, 0.1);
@@ -123,6 +125,7 @@ void Player::draw() {
 	ps->draw();
 
 	cout << "Altitude: " << altitude << endl;
+	// HUD
 }
 
 float Player::deltaTime() {
