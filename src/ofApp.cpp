@@ -41,27 +41,19 @@ void ofApp::setup(){
 	bTerrainSelected = true;
 //	ofSetWindowShape(1024, 768);
 
-	/*cam.setDistance(10);
-	cam.setNearClip(.1);
-	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format*/
 	ofSetVerticalSync(true);
-	//cam.disableMouseInput();
 	ofEnableSmoothing();
 	ofEnableDepthTest();
 	cameras.setup();
 	cam = cameras.cams.at(0);
 
 	// setup rudimentary lighting 
-	//
 	initLightingAndMaterials();
 
-	//mars.loadModel("geo/mars-low-v2.obj");
 	mars.loadModel("flats.obj", true);
 	mars.setScaleNormalization(false);
 	float scale = 2.5;
-	//mars.setScale(scale, scale, scale);
 
-	//boundingBox = &meshBounds(mars.getMesh(0));
 	boundingBox = new Box(
 		Vector3(-13, -5, -13),
 		Vector3(13, 5, 13)
@@ -122,9 +114,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-	ofBackgroundGradient(ofColor(0, 42, 156), ofColor::black);   // pick your own backgroujnd
-//	ofBackground(ofColor::black);
-//	cout << ofGetFrameRate() << endl;
+	ofBackgroundGradient(ofColor(0, 42, 156), ofColor::black);
 
 	ofSetColor(ofColor::white);
 	string altStr = "ALTITUDE - " + to_string(player->altitude);
@@ -132,26 +122,8 @@ void ofApp::draw(){
 
 	cam->begin();
 	ofPushMatrix();
-	if (bWireframe) {                    // wireframe mode  (include axis)
-		ofDisableLighting();
-		ofSetColor(ofColor::slateGray);
-		mars.drawWireframe();
-		if (bRoverLoaded) {
-			rover.drawWireframe();
-			if (!bTerrainSelected) drawAxis(rover.getPosition());
-		}
-		if (bTerrainSelected) drawAxis(ofVec3f(0, 0, 0));
-	}
-	else {
-		ofEnableLighting();              // shaded mode
-		mars.drawFaces();
-
-		if (bRoverLoaded) {
-			rover.drawFaces();
-			if (!bTerrainSelected) drawAxis(rover.getPosition());
-		}
-		if (bTerrainSelected) drawAxis(ofVec3f(0, 0, 0));
-	}
+	ofEnableLighting();
+	mars.drawFaces();
 
 	//sun.draw();
 	
@@ -160,9 +132,7 @@ void ofApp::draw(){
 	
 	//octree->draw();
 	
-	//shader.begin();
 	player->draw();
-	//shader.end();
 	
 	//ps->draw();
 	
@@ -330,9 +300,6 @@ void ofApp::mousePressed(int x, int y, int button) {
 	uint64_t endTime = ofGetElapsedTimeMicros();
 
 	cout << "Selection took " << endTime - startTime << " microseconds" << endl;
-
-	//cout << octree->box->min().x() << " " << octree->box->min().y() << " " << octree->box->min().y() << endl;
-	//cout << octree->box->max().x() << " " << octree->box->max().y() << " " << octree->box->max().y() << endl;
 }
 
 
