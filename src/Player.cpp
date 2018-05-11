@@ -14,7 +14,7 @@ Player::Player(Octree* octree) {
 	
 	// Physics
 	position = ofVec3f(0.1, 1, 0.1);
-	gravity = ofVec3f(0, -0.1, 0);
+	gravity = ofVec3f(0, -0.5, 0);
 	mass = 1;
 
 	altitude = 0;

@@ -7,6 +7,7 @@
 #include "Octree.h"
 #include "ParticleEmitter.h"
 #include "Player.h"
+#include "Camera.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -40,7 +41,9 @@ class ofApp : public ofBaseApp{
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
-		ofEasyCam cam;
+		ofEasyCam* cam;
+		Camera cameras;
+
 		ofxAssimpModelLoader mars, rover;
 		ofLight light;
 		Box* boundingBox;

@@ -40,13 +40,16 @@ void ofApp::setup(){
 	bRoverLoaded = false;
 	bTerrainSelected = true;
 //	ofSetWindowShape(1024, 768);
-	cam.setDistance(10);
+
+	/*cam.setDistance(10);
 	cam.setNearClip(.1);
-	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
+	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format*/
 	ofSetVerticalSync(true);
-	cam.disableMouseInput();
+	//cam.disableMouseInput();
 	ofEnableSmoothing();
 	ofEnableDepthTest();
+	cameras.setup();
+	cam = cameras.cams.at(0);
 
 	// setup rudimentary lighting 
 	//
@@ -68,7 +71,7 @@ void ofApp::setup(){
 
 	uint64_t startTime = ofGetElapsedTimeMillis();
 
-	octree = new Octree(boundingBox, &mars.getMesh(0), 5);
+	octree = new Octree(boundingBox, &mars.getMesh(0), 3);
 
 	uint64_t endTime = ofGetElapsedTimeMillis();
 
@@ -100,11 +103,13 @@ void ofApp::update() {
 
 	player->clearForce();
 
+	cameras.update(player->getPosition());
+
 	// Update keys
-	if (keys[OF_KEY_UP])      player->addForce(ofVec3f(0, 0, -1));
-	if (keys[OF_KEY_DOWN])    player->addForce(ofVec3f(0, 0, 1));
-	if (keys[OF_KEY_LEFT])    player->addForce(ofVec3f(-1, 0, 0));
-	if (keys[OF_KEY_RIGHT])   player->addForce(ofVec3f(1, 0, 0));
+	if (keys[OF_KEY_UP])      player->addForce(ofVec3f(0, 0, 1));
+	if (keys[OF_KEY_DOWN])    player->addForce(ofVec3f(0, 0, -1));
+	if (keys[OF_KEY_LEFT])    player->addForce(ofVec3f(1, 0, 0));
+	if (keys[OF_KEY_RIGHT])   player->addForce(ofVec3f(-1, 0, 0));
 	if (keys[GLFW_KEY_SPACE]) player->addForce(ofVec3f(0, 1, 0));
 
 	if (keys[GLFW_KEY_SPACE]) player->startThrust();
@@ -121,7 +126,7 @@ void ofApp::draw(){
 	string altStr = "ALTITUDE - " + to_string(player->altitude);
 	font->drawString(altStr, 20, 40);
 
-	cam.begin();
+	cam->begin();
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -170,7 +175,7 @@ void ofApp::draw(){
 	//ps->draw();
 	
 	ofPopMatrix();
-	cam.end();
+	cam->end();
 }
 
 // 
@@ -208,8 +213,8 @@ void ofApp::keyPressed(int key) {
 	switch (key) {
 	case 'C':
 	case 'c':
-		if (cam.getMouseInputEnabled()) cam.disableMouseInput();
-		else cam.enableMouseInput();
+		//if (cam.getMouseInputEnabled()) cam.disableMouseInput();
+		//else cam.enableMouseInput();
 		break;
 	case 'F':
 	case 'f':
@@ -219,7 +224,7 @@ void ofApp::keyPressed(int key) {
 	case 'h':
 		break;
 	case 'r':
-		cam.reset();
+		//cam.reset();
 		break;
 	case 's':
 		savePicture();
@@ -238,7 +243,7 @@ void ofApp::keyPressed(int key) {
 		toggleWireframeMode();
 		break;
 	case OF_KEY_ALT:
-		cam.enableMouseInput();
+		//cam.enableMouseInput();
 		bAltKeyDown = true;
 		break;
 	case OF_KEY_CONTROL:
@@ -250,8 +255,26 @@ void ofApp::keyPressed(int key) {
 		break;
 	case GLFW_KEY_SPACE:
 		//octree->undraw();
-
 		break;
+	case '1':
+		//Freefloating camera is index 0
+		cam = cameras.cams.at(0);
+		break;
+	case '2':
+		//Fixed position camera 1 is index 1
+		cam = cameras.cams.at(1);
+		break;
+	case '3':
+		//Fixed position camera 2 is index 2
+		cam = cameras.cams.at(2);
+		break;
+	case '4':
+		//Side Rocket cameras is index 3
+		cam = cameras.cams.at(3);
+		break;
+	case '5':
+		//Bottom rocket camera is index 4
+		cam = cameras.cams.at(4);
 	default:
 		break;
 	}
@@ -276,7 +299,7 @@ void ofApp::keyReleased(int key) {
 	switch (key) {
 	
 	case OF_KEY_ALT:
-		cam.disableMouseInput();
+		//cam.disableMouseInput();
 		bAltKeyDown = false;
 		break;
 	case OF_KEY_CONTROL:
@@ -303,8 +326,8 @@ void ofApp::mousePressed(int x, int y, int button) {
 	if (bAltKeyDown) return;
 
     ofVec3f mouse(mouseX, mouseY);
-	ofVec3f rayPoint = cam.screenToWorld(mouse);
-	ofVec3f rayDir = rayPoint - cam.getPosition();
+	ofVec3f rayPoint = cam->screenToWorld(mouse);
+	ofVec3f rayDir = rayPoint - cam->getPosition();
 	rayDir.normalize();
 	Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z),
 		Vector3(rayDir.x, rayDir.y, rayDir.z));
@@ -394,7 +417,7 @@ bool ofApp::doPointSelection() {
 	//
 	for (int i = 0; i < n; i++) {
 		ofVec3f vert = mesh.getVertex(i);
-		ofVec3f posScreen = cam.worldToScreen(vert);
+		ofVec3f posScreen = cam->worldToScreen(vert);
 		float distance = posScreen.distance(mouse);
 		if (distance < selectionRange) {
 			selection.push_back(vert);
@@ -408,7 +431,7 @@ bool ofApp::doPointSelection() {
 	if (bPointSelected) {
 		float distance = 0;
 		for (int i = 0; i < selection.size(); i++) {
-			ofVec3f point =  cam.worldToCamera(selection[i]);
+			ofVec3f point =  cam->worldToCamera(selection[i]);
 
 			// In camera space, the camera is at (0,0,0), so distance from 
 			// the camera is simply the length of the point vector
@@ -506,7 +529,7 @@ void ofApp::savePicture() {
 void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 	ofVec3f point;
-	mouseIntersectPlane(ofVec3f(0, 0, 0), cam.getZAxis(), point);
+	mouseIntersectPlane(ofVec3f(0, 0, 0), cam->getZAxis(), point);
 
 	if (rover.loadModel(dragInfo.files[0])) {
 		rover.setScaleNormalization(false);
@@ -519,8 +542,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 bool ofApp::mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point) {
 	ofVec2f mouse(mouseX, mouseY);
-	ofVec3f rayPoint = cam.screenToWorld(mouse);
-	ofVec3f rayDir = rayPoint - cam.getPosition();
+	ofVec3f rayPoint = cam->screenToWorld(mouse);
+	ofVec3f rayDir = rayPoint - cam->getPosition();
 	rayDir.normalize();
 	return (rayIntersectPlane(rayPoint, rayDir, planePoint, planeNorm, point));
 }
