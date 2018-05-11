@@ -18,12 +18,16 @@ public:
 
 	void update(ofVec3f playerLoc);
 
+	void toggleFollowPlayer();
+
 private:
 	ofEasyCam* floatingCam;
 	ofEasyCam* fixedCam1;
 	ofEasyCam* fixedCam2;
 	ofEasyCam* sideRocketCam;
 	ofEasyCam* botRocketCam;
+
+	bool floatingFollowPlayer;
 };
 
 

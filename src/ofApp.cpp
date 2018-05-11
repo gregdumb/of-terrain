@@ -213,8 +213,7 @@ void ofApp::keyPressed(int key) {
 	switch (key) {
 	case 'C':
 	case 'c':
-		//if (cam.getMouseInputEnabled()) cam.disableMouseInput();
-		//else cam.enableMouseInput();
+		cameras.toggleFollowPlayer();
 		break;
 	case 'F':
 	case 'f':

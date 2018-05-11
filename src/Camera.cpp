@@ -9,6 +9,8 @@
 //I'll need to pass the starting point of the rocketship to know where to point the first camera
 void Camera::setup()
 {
+	floatingFollowPlayer = false;
+
 	floatingCam = new ofEasyCam();
 	fixedCam1 = new ofEasyCam();
 	fixedCam2 = new ofEasyCam();
@@ -30,11 +32,19 @@ void Camera::setup()
 
 	floatingCam->enableMouseInput();
 
-	fixedCam1->setPosition(ofVec3f(10, 3, 10));
+	fixedCam1->setPosition(ofVec3f(-10, 3, -10));
 	fixedCam1->setTarget(ofVec3f(0, 3, 0));
+
+	fixedCam2->setPosition(ofVec3f(5, 3, -10));
+}
+
+void Camera::toggleFollowPlayer() {
+	floatingFollowPlayer = !floatingFollowPlayer;
 }
 
 void Camera::update(ofVec3f playerLoc) {
+
+	fixedCam2->setTarget(playerLoc);
 
 	ofVec3f sideLoc = playerLoc + ofVec3f(0, 1, -2);
 	ofVec3f sideTarget = playerLoc + ofVec3f(0, 0.75, 0);
@@ -46,6 +56,7 @@ void Camera::update(ofVec3f playerLoc) {
 	botRocketCam->setPosition(botLoc);
 	botRocketCam->setTarget(botTarget);
 
+	if(floatingFollowPlayer) floatingCam->setTarget(playerLoc);
 }
 
 void Camera::draw() {
