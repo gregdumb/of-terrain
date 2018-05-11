@@ -1,6 +1,5 @@
 #include "Particle.h"
 
-
 Particle::Particle() {
 
 	// initialize particle with some reasonable values first;
@@ -14,18 +13,26 @@ Particle::Particle() {
 	radius = .1;
 	damping = .99;
 	mass = 1;
-	color = ofColor::aquamarine;
+	color = ofColor::yellow;
 }
 
 void Particle::draw() {
-	ofSetColor(color);
-//	ofSetColor(ofMap(age(), 0, lifespan, 255, 10), 0, 0);
+	ofSetColor(r,g,b);
 	ofDrawSphere(position, radius);
 }
 
 // write your own integrator here.. (hint: it's only 3 lines of code)
 //
 void Particle::integrate() {
+
+	r += 1;
+	g += 20;
+	b += 35;
+	if (r > 255 || g > 255 || b > 255) {
+		r = 0;
+		g = 0;
+		b = 0;
+	}
 
 	// check for 0 framerate to avoid divide errors
 	//

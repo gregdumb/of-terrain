@@ -31,7 +31,9 @@
 //
 void ofApp::setup(){
 
+	// load shaders
 	shader.load("shadersGL3/shader");
+	cout << "using GL3" << endl;
 
 	bWireframe = false;
 	bDisplayPoints = false;
@@ -81,7 +83,7 @@ void ofApp::setup(){
 	ps->particleRadius = 0.1;
 	ps->setLifespan(1);
 	ps->setVelocity(ofVec3f(0, -1, 0));
-	ps->particleColor = ofColor::blue;
+	ps->particleColor = ofColor::yellow;
 	
 	ps->start();
 
@@ -95,7 +97,7 @@ void ofApp::setup(){
 // incrementally update scene (animation)
 //
 void ofApp::update() {
-
+	
 	player->update();
 
 	player->clearForce();
@@ -164,10 +166,13 @@ void ofApp::draw(){
 	octree->draw();
 	
 	player->draw();
+
 	shader.begin();
 	ps->draw();
 	shader.end();
+
 	ofPopMatrix();
+
 	cam.end();
 }
 

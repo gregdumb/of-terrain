@@ -1,9 +1,12 @@
+// fragment shader
+
 #version 150
 
 out vec4 outputColor;
 
 void main()
 {
+    // https://openframeworks.cc/ofBook/chapters/shaders.html
     // gl_FragCoord contains the window relative coordinate for the fragment.
     // we use gl_FragCoord.x position to control the red color value.
     // we use gl_FragCoord.y position to control the green color value.
@@ -12,9 +15,9 @@ void main()
     float windowWidth = 1024.0;
     float windowHeight = 768.0;
 
-	float r = gl_FragCoord.x / windowWidth;
-	float g = gl_FragCoord.y / windowHeight;
-	float b = 0.50;
-	float a = 0.80;
-	outputColor = vec4(r, g, b, a);
+    float r = gl_FragCoord.x / windowWidth;
+    float g = gl_FragCoord.y / windowHeight;
+    float b = 1.0;
+    float a = 1.0;
+    outputColor = vec4(r, g, b, a);
 }

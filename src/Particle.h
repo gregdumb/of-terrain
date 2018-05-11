@@ -21,6 +21,8 @@ public:
 	void    draw();
 	float   age();        // sec
 	ofColor color;
+	//ofShader shader;
+	int r, g, b = 0;
 };
 
 
