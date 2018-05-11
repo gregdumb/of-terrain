@@ -75,4 +75,6 @@ class ofApp : public ofBaseApp{
 		ofTrueTypeFont* font;
 
 		ofShader shader;
+
+		ofLight sun;
 };

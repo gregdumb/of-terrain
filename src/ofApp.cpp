@@ -68,13 +68,9 @@ void ofApp::setup(){
 	);
 	
 	cout << "Landscape has " << mars.getMesh(0).getNumVertices() << " verts" << endl;
-
 	uint64_t startTime = ofGetElapsedTimeMillis();
-
 	octree = new Octree(boundingBox, &mars.getMesh(0), 3);
-
 	uint64_t endTime = ofGetElapsedTimeMillis();
-
 	cout << "Octree build took " << endTime - startTime << " ms" << endl;
 	
 	ps = new ParticleEmitter();
@@ -86,12 +82,20 @@ void ofApp::setup(){
 	ps->setVelocity(ofVec3f(0, -1, 0));
 	ps->particleColor = ofColor::blue;
 	
-	ps->start();
+	//ps->start();
 
 	player = new Player(octree);
 
 	font = new ofTrueTypeFont();
 	font->loadFont("PROMETHEUS.ttf", 20);
+
+	sun.setup();
+	sun.enable();
+	sun.setDirectional();
+	sun.setAmbientColor(ofColor::yellow);
+	sun.setDiffuseColor(ofColor(255, 239, 167));
+	sun.setGlobalPosition(ofVec3f(10, 10, 10));
+	sun.setGlobalOrientation(ofQuaternion(0.3826834, 0, 0, 0.9238795));
 }
 
 //--------------------------------------------------------------
@@ -149,24 +153,12 @@ void ofApp::draw(){
 		if (bTerrainSelected) drawAxis(ofVec3f(0, 0, 0));
 	}
 
-
-	if (bDisplayPoints) {                // display points as an option    
-		glPointSize(3);
-		ofSetColor(ofColor::green);
-		mars.drawVertices();
-	}
-
-	// highlight selected point (draw sphere around selected point)
-	//
-	if (bPointSelected) {
-		ofSetColor(ofColor::blue);
-		ofDrawSphere(selectedPoint, .1);
-	}
+	//sun.draw();
 	
-	ofNoFill();
-	ofSetColor(ofColor::white);
+	//ofNoFill();
+	//ofSetColor(ofColor::white);
 	
-	octree->draw();
+	//octree->draw();
 	
 	//shader.begin();
 	player->draw();
@@ -508,7 +500,7 @@ void ofApp::initLightingAndMaterials() {
 	glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, lmodel_twoside);
 
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+//	glEnable(GL_LIGHT0);
 //	glEnable(GL_LIGHT1);
 	glShadeModel(GL_SMOOTH);
 } 
